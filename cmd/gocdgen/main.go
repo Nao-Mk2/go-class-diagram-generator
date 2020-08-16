@@ -24,12 +24,12 @@ func main() {
 
 	path, err := getAbsolutePath()
 	if err != nil {
-		log.Fatalf("failer to get absolute path: %+v", err)
+		log.Fatalf("failure to get absolute path: %+v", err)
 	}
 
 	pkgs, err := gocdparser.ParsePackages(path)
 	if err != nil {
-		log.Fatalf("failer to parse packages: %+v", err)
+		log.Fatalf("failure to parse packages: %+v", err)
 	}
 
 	gen := generator.StdOutGenerator{
