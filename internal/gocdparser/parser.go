@@ -17,6 +17,9 @@ func ParsePackages(path string) ([]*entity.Package, error) {
 	}
 
 	switch mode := fi.Mode(); {
+	case mode.IsDir():
+		return parseDir(path)
+
 	case mode.IsRegular():
 		pkg, err := parseFile(path)
 		if err != nil {
@@ -37,4 +40,26 @@ func parseFile(path string) (*entity.Package, error) {
 	}
 
 	return entity.NewPackage(f.Name.Name, f.Imports)
+}
+
+func parseDir(path string) ([]*entity.Package, error) {
+	fs := token.NewFileSet()
+	parsed, err := parser.ParseDir(fs, path, nil, parser.ImportsOnly)
+	if err != nil {
+		return nil, err
+	}
+
+	pkgs := make([]*entity.Package, 0)
+	for _, p := range parsed {
+		for _, f := range p.Files {
+			pkg, err := entity.NewPackage(f.Name.Name, f.Imports)
+			if err != nil {
+				return nil, err
+			}
+
+			pkgs = append(pkgs, pkg)
+		}
+	}
+
+	return pkgs, nil
 }
