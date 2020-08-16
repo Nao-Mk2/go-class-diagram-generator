@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/Nao-Mk2/go-class-diagram-generator/internal/generator"
-	gocdgenpaser "github.com/Nao-Mk2/go-class-diagram-generator/internal/parser"
+	"github.com/Nao-Mk2/go-class-diagram-generator/internal/gocdparser"
 )
 
 func main() {
@@ -27,7 +27,7 @@ func main() {
 		log.Fatalf("failer to get absolute path: %+v", err)
 	}
 
-	pkgs, err := gocdgenpaser.ParsePackages(path)
+	pkgs, err := gocdparser.ParsePackages(path)
 	if err != nil {
 		log.Fatalf("failer to parse packages: %+v", err)
 	}

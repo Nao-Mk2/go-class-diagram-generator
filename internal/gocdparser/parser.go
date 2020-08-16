@@ -1,4 +1,4 @@
-package parser
+package gocdparser
 
 import (
 	"fmt"
@@ -22,10 +22,7 @@ func ParsePackages(path string) ([]*entity.Package, error) {
 		if err != nil {
 			return nil, err
 		}
-
-		pkgs := make([]*entity.Package, 0)
-		pkgs = append(pkgs, pkg)
-		return pkgs, nil
+		return []*entity.Package{pkg}, nil
 
 	default:
 		return nil, fmt.Errorf("not a directory or file: %s", path)
