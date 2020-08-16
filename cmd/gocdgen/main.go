@@ -12,13 +12,20 @@ import (
 )
 
 func main() {
+	var recursion bool
+	flag.BoolVar(&recursion, "r", false, "search sub-directory recursively")
+	flag.BoolVar(&recursion, "recursive", false, "search sub-directory recursively")
 	flag.Parse()
 
 	args := flag.Args()
 	if len(args) < 1 {
 		fmt.Println(`Usage:
 
-	gocdgen <path>`)
+	gocdgen <path>
+	
+The flags are:
+
+	r, recursive search sub-directory recursively`)
 		os.Exit(0)
 	}
 
@@ -27,7 +34,10 @@ func main() {
 		log.Fatalf("failure to get absolute path: %+v", err)
 	}
 
-	pkgs, err := gocdparser.ParsePackages(path)
+	parser := gocdparser.GoCodeParser{
+		Recursion: recursion,
+	}
+	pkgs, err := parser.ParsePackages(path)
 	if err != nil {
 		log.Fatalf("failure to parse packages: %+v", err)
 	}
