@@ -81,10 +81,22 @@ func getDirs(path string, recursion bool) ([]string, error) {
 	return paths, nil
 }
 
+func makeUnique(imps []entity.Import) []entity.Import {
+	keys := make(map[string]bool, 0)
+	unique := make([]entity.Import, 0)
+	for _, imp := range imps {
+		if _, v := keys[imp.Path]; !v {
+			keys[imp.Path] = true
+			unique = append(unique, imp)
+		}
+	}
+
+	return unique
+}
+
 func parseDir(paths []string, includeTest bool) ([]*entity.Package, error) {
 
-	// TODO: considering the same package name
-	pkgs := make([]*entity.Package, 0)
+	pkgMap := make(map[string]*entity.Package, 0)
 	for _, path := range paths {
 		fs := token.NewFileSet()
 		parsed, err := parser.ParseDir(fs, path, nil, parser.ImportsOnly)
@@ -103,9 +115,22 @@ func parseDir(paths []string, includeTest bool) ([]*entity.Package, error) {
 					return nil, err
 				}
 
-				pkgs = append(pkgs, pkg)
+				if pkgMap[f.Name.Name] != nil {
+					pkgMap[f.Name.Name].Imports = append(pkgMap[f.Name.Name].Imports, pkg.Imports...)
+				} else {
+					pkgMap[f.Name.Name] = pkg
+				}
 			}
 		}
+	}
+
+	pkgs := make([]*entity.Package, 0)
+	for _, v := range pkgMap {
+		pkgs = append(pkgs, v)
+	}
+
+	for _, pkg := range pkgs {
+		pkg.Imports = makeUnique(pkg.Imports)
 	}
 
 	return pkgs, nil
