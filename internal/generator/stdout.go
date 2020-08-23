@@ -7,7 +7,8 @@ import (
 )
 
 type StdOutGenerator struct {
-	Packages []*entity.Package
+	Packages        []*entity.Package
+	IncludeStandard bool
 }
 
 func (sg StdOutGenerator) Generate() {
@@ -23,7 +24,7 @@ func (sg StdOutGenerator) Generate() {
 			}
 		}
 
-		if len(stds) > 0 {
+		if sg.IncludeStandard && len(stds) > 0 {
 			log.Println("--- standard libraries")
 			for _, std := range stds {
 				log.Printf("----- %s", std)

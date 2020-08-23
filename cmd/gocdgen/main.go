@@ -12,10 +12,11 @@ import (
 )
 
 func main() {
-	var recursion bool
-	var includeTest bool
+	var recursion, includeStandard, includeTest bool
 	flag.BoolVar(&recursion, "r", false, "")
 	flag.BoolVar(&recursion, "recursive", false, "search sub-directory recursively")
+	flag.BoolVar(&includeStandard, "s", false, "")
+	flag.BoolVar(&includeStandard, "standard", false, "include standard library packages")
 	flag.BoolVar(&includeTest, "t", false, "")
 	flag.BoolVar(&includeTest, "test", false, "include _test packages")
 	flag.Parse()
@@ -47,7 +48,8 @@ The flags are:
 	}
 
 	gen := generator.StdOutGenerator{
-		Packages: pkgs,
+		Packages:        pkgs,
+		IncludeStandard: includeStandard,
 	}
 	gen.Generate()
 }
