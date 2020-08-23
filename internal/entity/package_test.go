@@ -41,12 +41,12 @@ func TestNewPackage(t *testing.T) {
 			args: args{
 				name: "main",
 				imports: []*ast.ImportSpec{
-					&ast.ImportSpec{
+					{
 						Path: &ast.BasicLit{
 							Value: "fmt",
 						},
 					},
-					&ast.ImportSpec{
+					{
 						Path: &ast.BasicLit{
 							Value: "github.com/Nao-Mk2/go-class-diagram-generator/internal/parser",
 						},

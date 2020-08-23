@@ -13,7 +13,7 @@ import (
 
 func main() {
 	var recursion bool
-	flag.BoolVar(&recursion, "r", false, "search sub-directory recursively")
+	flag.BoolVar(&recursion, "r", false, "")
 	flag.BoolVar(&recursion, "recursive", false, "search sub-directory recursively")
 	flag.Parse()
 
