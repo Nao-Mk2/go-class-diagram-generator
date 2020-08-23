@@ -13,7 +13,8 @@ import (
 
 // GoCodeParser implements parser methods for Go source files.
 type GoCodeParser struct {
-	Recursion bool
+	IncludeTest bool
+	Recursion   bool
 }
 
 // ParsePackages returns a map of package name -> package AST with all the packages found.
@@ -29,7 +30,7 @@ func (p GoCodeParser) ParsePackages(path string) ([]*entity.Package, error) {
 		if err != nil {
 			return nil, err
 		}
-		return parseDir(paths)
+		return parseDir(paths, p.IncludeTest)
 
 	case mode.IsRegular():
 		pkg, err := parseFile(path)
@@ -80,7 +81,7 @@ func getDirs(path string, recursion bool) ([]string, error) {
 	return paths, nil
 }
 
-func parseDir(paths []string) ([]*entity.Package, error) {
+func parseDir(paths []string, includeTest bool) ([]*entity.Package, error) {
 
 	// TODO: considering the same package name
 	pkgs := make([]*entity.Package, 0)
@@ -92,6 +93,10 @@ func parseDir(paths []string) ([]*entity.Package, error) {
 		}
 
 		for _, p := range parsed {
+			if strings.Index(p.Name, "_test") > -1 && !includeTest {
+				continue
+			}
+
 			for _, f := range p.Files {
 				pkg, err := entity.NewPackage(f.Name.Name, f.Imports)
 				if err != nil {

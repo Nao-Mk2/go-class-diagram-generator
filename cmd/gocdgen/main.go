@@ -13,8 +13,11 @@ import (
 
 func main() {
 	var recursion bool
+	var includeTest bool
 	flag.BoolVar(&recursion, "r", false, "")
 	flag.BoolVar(&recursion, "recursive", false, "search sub-directory recursively")
+	flag.BoolVar(&includeTest, "t", false, "")
+	flag.BoolVar(&includeTest, "test", false, "include _test packages")
 	flag.Parse()
 
 	args := flag.Args()
@@ -35,7 +38,8 @@ The flags are:
 	}
 
 	parser := gocdparser.GoCodeParser{
-		Recursion: recursion,
+		IncludeTest: includeTest,
+		Recursion:   recursion,
 	}
 	pkgs, err := parser.ParsePackages(path)
 	if err != nil {
